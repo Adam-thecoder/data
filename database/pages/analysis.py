@@ -6,7 +6,7 @@ import altair as alt
 st.set_page_config(page_title="📊 Data Visualizer", layout="wide")
 st.title("📊 Component Visual Analysis")
 
-base_path = "/Users/macbookair/Py/database/csv"
+base_path = "database/csv"
 datasets = {
     "Compressor": os.path.join(base_path, "compressor.csv"),
     "Evaporator Coil": os.path.join(base_path, "evaporator_coil.csv"),
