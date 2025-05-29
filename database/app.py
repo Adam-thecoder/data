@@ -7,7 +7,7 @@ st.set_page_config(page_title="Data Manager", layout="centered")
 st.title("📦 Component Data Manager")
 
 # Change this path when switching between local and deployed
-base_path = "/Users/macbookair/Py/database/csv"
+base_path = "database/csv"
 # base_path = "csv"  # Uncomment this for GitHub/Streamlit deployment
 
 datasets = {
