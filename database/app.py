@@ -31,18 +31,17 @@ for label, path in datasets.items():
             with col1:
                 if st.button(f"💾 Save Changes to {label}", key=f"save_{label}"):
                     try:
-            # Drop fully empty rows but keep partially filled ones
+                        # Drop fully empty rows but keep partially filled ones
                         cleaned_df = edited_df[~edited_df.isnull().all(axis=1)].copy()
 
-            # Replace any remaining NaNs with empty strings (for CSV compatibility)
+                        # Replace any remaining NaNs with empty strings (for CSV compatibility)
                         cleaned_df.fillna("", inplace=True)
 
-            # Save to CSV
+                        # Save to CSV
                         cleaned_df.to_csv(path, index=False)
                         st.success(f"{label} data saved.")
                     except Exception as save_err:
                         st.error(f"Failed to save data: {save_err}")
-
 
             with col2:
                 buffer = io.BytesIO()
