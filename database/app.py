@@ -31,13 +31,16 @@ for label, path in datasets.items():
             with col1:
                 if st.button(f"💾 Save Changes to {label}", key=f"save_{label}"):
                     try:
-                        # Drop fully empty rows but keep partially filled ones
+                        # Remove fully empty rows
                         cleaned_df = edited_df[~edited_df.isnull().all(axis=1)].copy()
 
-                        # Replace any remaining NaNs with empty strings (for CSV compatibility)
-                        cleaned_df.fillna("", inplace=True)
+                        # Process columns: convert numeric columns, fill others
+                        for col in cleaned_df.columns:
+                            if pd.api.types.is_numeric_dtype(cleaned_df[col]):
+                                cleaned_df[col] = pd.to_numeric(cleaned_df[col], errors='coerce')
+                            else:
+                                cleaned_df[col] = cleaned_df[col].astype(str).fillna("")
 
-                        # Save to CSV
                         cleaned_df.to_csv(path, index=False)
                         st.success(f"{label} data saved.")
                     except Exception as save_err:
