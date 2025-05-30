@@ -31,11 +31,15 @@ for label, path in datasets.items():
             with col1:
                 if st.button(f"💾 Save Changes to {label}", key=f"save_{label}"):
                     try:
-                        # Drop fully empty rows but keep partially filled ones
+                        # Drop fully empty rows
                         cleaned_df = edited_df[~edited_df.isnull().all(axis=1)].copy()
 
-                        # Replace any remaining NaNs with empty strings (for CSV compatibility)
-                        cleaned_df.fillna("", inplace=True)
+                        # Fill empty numeric cells with 0, others with empty string
+                        for col in cleaned_df.columns:
+                            if pd.api.types.is_numeric_dtype(cleaned_df[col]):
+                                cleaned_df[col] = cleaned_df[col].fillna(0)
+                            else:
+                                cleaned_df[col] = cleaned_df[col].fillna("")
 
                         # Save to CSV
                         cleaned_df.to_csv(path, index=False)
@@ -58,3 +62,4 @@ for label, path in datasets.items():
                 )
         except Exception as e:
             st.error(f"Error loading {label} data: {e}")
+
