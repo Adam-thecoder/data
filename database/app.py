@@ -22,19 +22,22 @@ for label, path in datasets.items():
     st.subheader(label)
     with st.expander(f"{label} Data"):
         try:
+            # Load the CSV
             df = pd.read_csv(path)
 
-            # Put editor and save button in a form
             with st.form(key=f"form_{label}"):
-                #st.caption("ℹ️ Add new rows below and click 'Save Changes' to commit them.")
+                #st.caption("ℹ️ You can add or delete rows below. Click 'Save Changes' to commit all edits.")
                 edited_df = st.data_editor(df, num_rows="dynamic", use_container_width=True)
+
                 save_clicked = st.form_submit_button(f"💾 Save Changes to {label}")
 
                 if save_clicked:
                     try:
-                        # Drop fully empty rows, keep partially filled ones
-                        cleaned_df = edited_df[~edited_df.isnull().all(axis=1)].copy()
-                        cleaned_df.fillna("", inplace=True)  # Replace NaNs with empty string
+                        # Clean the dataframe: remove fully empty rows and ensure it's safe to save
+                        cleaned_df = edited_df.dropna(how='all').copy()
+                        cleaned_df.fillna("", inplace=True)
+
+                        # Save back to CSV
                         cleaned_df.to_csv(path, index=False)
                         st.success(f"{label} data saved.")
                     except Exception as save_err:
