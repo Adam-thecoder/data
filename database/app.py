@@ -24,38 +24,36 @@ for label, path in datasets.items():
     with st.expander(f"{label} Data"):
         try:
             df = pd.read_csv(path)
-            edited_df = st.data_editor(df, num_rows="dynamic", use_container_width=True)
 
-            col1, col2 = st.columns(2)
+            # Put editor and save button in a form
+            with st.form(key=f"form_{label}"):
+                #st.caption("ℹ️ Add new rows below and click 'Save Changes' to commit them.")
+                edited_df = st.data_editor(df, num_rows="dynamic", use_container_width=True)
+                save_clicked = st.form_submit_button(f"💾 Save Changes to {label}")
 
-            with col1:
-                if st.button(f"💾 Save Changes to {label}", key=f"save_{label}"):
+                if save_clicked:
                     try:
-            # Drop fully empty rows but keep partially filled ones
+                        # Drop fully empty rows, keep partially filled ones
                         cleaned_df = edited_df[~edited_df.isnull().all(axis=1)].copy()
-
-            # Replace any remaining NaNs with empty strings (for CSV compatibility)
-                        cleaned_df.fillna("", inplace=True)
-
-            # Save to CSV
+                        cleaned_df.fillna("", inplace=True)  # Replace NaNs with empty string
                         cleaned_df.to_csv(path, index=False)
                         st.success(f"{label} data saved.")
                     except Exception as save_err:
                         st.error(f"Failed to save data: {save_err}")
 
+            # Download button (can be outside the form)
+            buffer = io.BytesIO()
+            with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
+                edited_df.to_excel(writer, index=False, sheet_name=label[:31])
+            buffer.seek(0)
 
-            with col2:
-                buffer = io.BytesIO()
-                with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
-                    edited_df.to_excel(writer, index=False, sheet_name=label[:31])
-                buffer.seek(0)
+            st.download_button(
+                label="⬇️ Download as Excel",
+                data=buffer,
+                file_name=f"{label.replace(' ', '_').lower()}.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                key=f"download_{label}"
+            )
 
-                st.download_button(
-                    label="⬇️ Download as Excel",
-                    data=buffer,
-                    file_name=f"{label.replace(' ', '_').lower()}.xlsx",
-                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                    key=f"download_{label}"
-                )
         except Exception as e:
             st.error(f"Error loading {label} data: {e}")
