@@ -18,9 +18,11 @@ datasets = {
     "Air Filter": os.path.join(base_path, "air_filter.csv")
 }
 
-# Initialize success flags
-if "save_flags" not in st.session_state:
-    st.session_state.save_flags = {}
+# Store save status
+if "last_saved_label" not in st.session_state:
+    st.session_state.last_saved_label = None
+if "saved_time" not in st.session_state:
+    st.session_state.saved_time = 0
 
 for label, path in datasets.items():
     st.subheader(label)
@@ -40,15 +42,17 @@ for label, path in datasets.items():
                         cleaned_df.reset_index(drop=True, inplace=True)
 
                         cleaned_df.to_csv(path, index=False)
-                        st.session_state.save_flags[label] = True
-                        st.experimental_rerun()  # Trigger UI refresh to show the message
+                        st.session_state.last_saved_label = label
+                        st.session_state.saved_time = time.time()
                     except Exception as save_err:
                         st.error(f"Failed to save data: {save_err}")
 
         except Exception as e:
             st.error(f"Error loading {label} data: {e}")
 
-    # Display success message only once
-    if st.session_state.save_flags.get(label):
+    # Show success message for 3 seconds after save
+    if (
+        st.session_state.last_saved_label == label
+        and time.time() - st.session_state.saved_time < 3
+    ):
         st.success(f"{label} data saved.")
-        st.session_state.save_flags[label] = False  # Reset after showing
