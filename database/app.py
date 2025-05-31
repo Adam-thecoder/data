@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import io
 import os
 
 st.set_page_config(page_title="Data Manager", layout="centered")
@@ -40,20 +39,6 @@ for label, path in datasets.items():
                         st.success(f"{label} data saved.")
                     except Exception as save_err:
                         st.error(f"Failed to save data: {save_err}")
-
-            # Download button (can be outside the form)
-            buffer = io.BytesIO()
-            with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
-                edited_df.to_excel(writer, index=False, sheet_name=label[:31])
-            buffer.seek(0)
-
-            st.download_button(
-                label="⬇️ Download as Excel",
-                data=buffer,
-                file_name=f"{label.replace(' ', '_').lower()}.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                key=f"download_{label}"
-            )
 
         except Exception as e:
             st.error(f"Error loading {label} data: {e}")
