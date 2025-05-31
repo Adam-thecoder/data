@@ -46,13 +46,11 @@ for label, path in datasets.items():
                 # Logic to execute when the save button is clicked
                 if save_clicked:
                     try:
-                        # --- MAIN CHANGE EXPLANATION HERE ---
-                        # When rows are deleted in st.data_editor, they are simply not present
-                        # in the 'edited_df' returned by the editor.
-                        # The following line robustly handles both completely empty new rows
-                        # and implicitly handles deleted rows by only keeping rows that are
-                        # not entirely NaN (empty).
-                        cleaned_df = edited_df[~edited_df.isnull().all(axis=1)].copy()
+                        # --- MAIN CHANGE HERE ---
+                        # Use .dropna(how='all') to remove rows where all values are NaN.
+                        # This is a more explicit way to handle rows that have been effectively
+                        # deleted by the st.data_editor (which often turns deleted rows into all NaNs).
+                        cleaned_df = edited_df.dropna(how='all').copy()
 
                         # Replace any remaining NaN values (e.g., in partially filled new rows) with empty strings
                         cleaned_df.fillna("", inplace=True)
