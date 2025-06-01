@@ -51,12 +51,12 @@ def display_dataset(label, path):
 
 # List of datasets to manage
 datasets = {
-    "Compressor": "/Users/macbookair/Py/database/csv/compressor.csv",
-    "Evaporator coil": "/Users/macbookair/Py/database/csv/evaporator_coil.csv",
-    "Condensor coil": "/Users/macbookair/Py/database/csv/codensor_coil.csv",
-    "Blower motor": "/Users/macbookair/Py/database/csv/blower_motor.csv",
-    "Radaitor motor": "/Users/macbookair/Py/database/csv/radaitor_motor.csv",
-    "Air filter": "/Users/macbookair/Py/database/csv/air_filter.csv"
+    "Compressor": "database/csv/compressor.csv",
+    "Evaporator coil": "database/csv/evaporator_coil.csv",
+    "Condensor coil": "database/csv/codensor_coil.csv",
+    "Blower motor": "database/csv/blower_motor.csv",
+    "Radaitor motor": "database/csv/radaitor_motor.csv",
+    "Air filter": "database/csv/air_filter.csv"
 }
 
 # Display all dataset sections
