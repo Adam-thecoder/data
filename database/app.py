@@ -30,7 +30,7 @@ def display_dataset(label, path):
         filtered_df = df
 
     # ✍️ Editable data table
-    with st.expander("📋 Data list (editable)"):
+    with st.expander("📋 Data list"):
         edited_df = st.data_editor(
             filtered_df,
             num_rows="dynamic",
