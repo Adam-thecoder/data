@@ -78,7 +78,7 @@ datasets = {
     "Evaporator coil": "database/csv/evaporator_coil.csv",
     "Condensor coil": "database/csv/condensor_coil.csv",
     "Blower motor": "database/csv/blower_motor.csv",
-    "Radaitor motor": "database/csv/radiator_motor.csv",
+    "Radiator motor": "database/csv/radiator_motor.csv",
     "Air filter": "database/csv/air_filter.csv"
 }
 
