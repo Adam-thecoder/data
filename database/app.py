@@ -79,7 +79,9 @@ datasets = {
     "Condensor coil": "database/csv/condensor_coil.csv",
     "Blower motor": "database/csv/blower_motor.csv",
     "Radiator motor": "database/csv/radiator_motor.csv",
-    "Air filter": "database/csv/air_filter.csv"
+    "Air filter": "database/csv/air_filter.csv",
+    "Filter dryer receiver": "database/csv/Filter_dryer_receiver.csv",
+    "Expension valve":"database/csv/Expension_valve.csv"
 }
 
 for label, path in datasets.items():
