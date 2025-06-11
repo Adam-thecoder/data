@@ -4,6 +4,9 @@ import os
 
 st.set_page_config(page_title="Data", page_icon="📊", layout="centered")
 
+# Make sure the folder exists
+os.makedirs("database/csv", exist_ok=True)
+
 def load_csv(path):
     if os.path.exists(path):
         return pd.read_csv(path)
@@ -11,7 +14,10 @@ def load_csv(path):
         return pd.DataFrame()
 
 def save_csv(df, path):
-    df.to_csv(path, index=False)
+    try:
+        df.to_csv(path, index=False)
+    except Exception as e:
+        st.error(f"❌ Failed to save CSV: {e}")
 
 def display_dataset(label, path):
     st.subheader(label)
@@ -38,17 +44,20 @@ def display_dataset(label, path):
             key=f"{label}_editor"
         )
 
-    # ✅ Save edited data (applies to entire dataset, not just filtered)
+    # ✅ Save edited data
     if st.button(f"💾 Save {label} data", key=f"{label}_save"):
-        # Re-map edited rows to original df if a search term was used
-        if search_term:
-            mask = df.apply(lambda row: row.astype(str).str.contains(search_term, case=False).any(), axis=1)
-            df.loc[mask] = edited_df.values
-        else:
-            df = edited_df
+        try:
+            if search_term:
+                filtered_indices = df[df.apply(lambda row: row.astype(str).str.contains(search_term, case=False).any(), axis=1)].index
+                df.loc[filtered_indices] = edited_df.values
+            else:
+                df = edited_df
 
-        save_csv(df, path)
-        st.success("Changes saved!")
+            save_csv(df, path)
+            st.success("Changes saved!")
+            st.rerun()
+        except Exception as e:
+            st.error(f"❌ Failed to save data: {e}")
 
     # ➕ Add new row
     with st.expander("➕ Add new row"):
@@ -64,13 +73,17 @@ def display_dataset(label, path):
             else:
                 new_row[col] = st.text_input(f"{col}", key=input_key)
 
+        # 🧪 Show the row to be added
+        st.write("🧪 New row preview:", new_row)
+
         if st.button(f"➕ Add {label} row", key=f"{label}_add"):
             try:
                 df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
                 save_csv(df, path)
-                st.success("Row added successfully! Refresh to see it.")
+                st.success("Row added successfully!")
+                st.rerun()
             except Exception as e:
-                st.error(f"Failed to add row: {e}")
+                st.error(f"❌ Failed to add row: {e}")
 
 # 🗂️ Your datasets
 datasets = {
@@ -81,7 +94,7 @@ datasets = {
     "Radiator motor": "database/csv/radiator_motor.csv",
     "Air filter": "database/csv/air_filter.csv",
     "Filter dryer receiver": "database/csv/Filter_dryer_receiver.csv",
-    "Expension valve":"database/csv/Expension_valve.csv"
+    "Expension valve": "database/csv/Expension_valve.csv"
 }
 
 for label, path in datasets.items():
