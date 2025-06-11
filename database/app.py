@@ -5,7 +5,7 @@ import os
 st.set_page_config(page_title="Data", page_icon="📊", layout="centered")
 
 # Make sure the folder exists
-os.makedirs("/Users/macbookair/Py/database/csv", exist_ok=True)
+os.makedirs("database/csv", exist_ok=True)
 
 def load_csv(path):
     if os.path.exists(path):
