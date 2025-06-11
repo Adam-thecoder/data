@@ -5,7 +5,7 @@ import os
 st.set_page_config(page_title="Data", page_icon="📊", layout="centered")
 
 # Make sure the folder exists
-os.makedirs("database/csv", exist_ok=True)
+os.makedirs("/Users/macbookair/Py/database/csv", exist_ok=True)
 
 def load_csv(path):
     if os.path.exists(path):
@@ -68,8 +68,8 @@ def display_dataset(label, path):
 
             if dtype == "int64":
                 new_row[col] = st.number_input(f"{col}", step=1, key=input_key)
-            elif dtype == "float64":
-                new_row[col] = st.number_input(f"{col}", format="%.2f", key=input_key)
+            elif dtype == "int64":
+                new_row[col] = st.number_input(f"{col}", step=1, key=input_key)
             else:
                 new_row[col] = st.text_input(f"{col}", key=input_key)
 
@@ -99,3 +99,13 @@ datasets = {
 
 for label, path in datasets.items():
     display_dataset(label, path)
+
+
+
+
+
+
+
+
+
+
